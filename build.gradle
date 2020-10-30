@@ -1,23 +1,24 @@
 plugins {
     id 'java'
     id 'io.izzel.taboolib' version '1.2'
-    id 'org.jetbrains.kotlin.jvm' version '1.4.0-rc'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
 }
 
-group = 'io.izzel.taboolib.example'
+group = 'kim.minecraft.citycore'
 version = '1.0.0'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 taboolib {
-    tabooLibVersion = '5.41'
+    tabooLibVersion = '5.42'
     loaderVersion = '2.6'
     classifier = null
 }
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
