@@ -11,7 +11,8 @@ import kotlinx.serialization.Serializable
 import java.util.*
 
 @Serializable
-data class CountryHuman(@Serializable(with = UUIDAsStringSerializer::class) override val rawSource: UUID, @Serializable(with = UUIDAsStringSerializer::class) override val rawUpstream: UUID) : Character<Human>(), SubRegionHolder, CountryOwner, PartyOwner {
+data class CountryHuman(@Serializable(with = UUIDAsStringSerializer::class) override val rawSource: UUID,
+                        @Serializable(with = UUIDAsStringSerializer::class) override val rawUpstream: UUID) : Character<Human>(), SubRegionHolder, CountryOwner, PartyOwner {
     constructor(source: Human, upstream: Country) : this(source.uid, upstream.uid)
 
     override val source: Human

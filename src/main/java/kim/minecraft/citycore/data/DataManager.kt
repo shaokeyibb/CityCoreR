@@ -1,12 +1,10 @@
 package kim.minecraft.citycore.data
 
-import kim.minecraft.citycore.data.interfaces.owner.CountryOwner
-import kim.minecraft.citycore.data.interfaces.owner.MainRegionHolder
-import kim.minecraft.citycore.data.interfaces.owner.SubRegionHolder
-import kim.minecraft.citycore.data.interfaces.owner.TempRegionHolder
+import kim.minecraft.citycore.data.interfaces.owner.*
 import kim.minecraft.citycore.data.personal.Human
 import kim.minecraft.citycore.data.personal.SinglePlayer
 import kim.minecraft.citycore.data.political.Country
+import kim.minecraft.citycore.data.political.Party
 import java.util.*
 
 object DataManager {
@@ -47,11 +45,21 @@ object DataManager {
     }
 
     fun UUID.toCountry(): Country = countries.find { it.uid == this }
-            ?: throw AssertionError("UUID from Human can not be found.")
+            ?: throw AssertionError("UUID from Country can not be found.")
 
     fun UUID.toCountryOwner(): CountryOwner {
         TODO()
     }
+
+    val parties: MutableSet<Party> = mutableSetOf()
+
+    fun UUID.toParty(): Party = parties.find { it.uid == this }
+            ?: throw AssertionError("UUID from Party can not be found.")
+
+    fun UUID.toPartyOwner(): PartyOwner {
+        TODO()
+    }
+
 
     val regions: MutableSet<Region> = mutableSetOf()
 

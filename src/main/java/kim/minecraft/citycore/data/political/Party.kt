@@ -31,4 +31,14 @@ data class Party(@Serializable(with = UUIDAsStringSerializer::class) override va
             TODO("callEvent")
         }
 
+    override val members: MutableSet<PartyHuman> = mutableSetOf()
+
+    override fun addMember(member: Human) {
+        members.add(PartyHuman(member, this))
+    }
+
+    override fun dropMember(member: Human) {
+        members.removeIf { it.source == member }
+    }
+
 }
