@@ -1,11 +1,14 @@
 package kim.minecraft.citycore.data.political
 
 import kim.minecraft.citycore.data.DataManager.toCountryOwner
+import kim.minecraft.citycore.data.economic.Wallet
 import kim.minecraft.citycore.data.interfaces.DestroyAble
 import kim.minecraft.citycore.data.interfaces.UniqueAble
 import kim.minecraft.citycore.data.interfaces.holder.MemberHolder
 import kim.minecraft.citycore.data.interfaces.holder.NameHolder
+import kim.minecraft.citycore.data.interfaces.holder.WalletHolder
 import kim.minecraft.citycore.data.interfaces.owner.CountryOwner
+import kim.minecraft.citycore.data.interfaces.owner.CurrencyCreator
 import kim.minecraft.citycore.data.interfaces.owner.MainRegionHolder
 import kim.minecraft.citycore.data.interfaces.owner.TempRegionHolder
 import kim.minecraft.citycore.data.personal.Human
@@ -16,7 +19,7 @@ import java.util.*
 
 @Serializable
 data class Country(@Serializable(with = UUIDAsStringSerializer::class) override val uid: UUID,
-                   @Serializable(with = UUIDAsStringSerializer::class) private var rawOwner: UUID?) : UniqueAble, NameHolder, DestroyAble, MemberHolder<Human, CountryHuman>, MainRegionHolder, TempRegionHolder {
+                   @Serializable(with = UUIDAsStringSerializer::class) private var rawOwner: UUID?) : UniqueAble, NameHolder, DestroyAble, MemberHolder<Human, CountryHuman>, MainRegionHolder, TempRegionHolder, CurrencyCreator, WalletHolder {
     constructor(owner: CountryOwner) : this(UUID.randomUUID(), owner.uid)
 
     override var name: String = "国家#${uid.toString().replace("-", "").substring(0, 6)}"
@@ -50,5 +53,7 @@ data class Country(@Serializable(with = UUIDAsStringSerializer::class) override 
     override fun dropMember(member: Human) {
         members.removeIf { it.source == member }
     }
+
+    override val wallet: Wallet = Wallet(this)
 
 }

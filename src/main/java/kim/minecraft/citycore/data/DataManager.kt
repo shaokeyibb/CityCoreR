@@ -1,5 +1,6 @@
 package kim.minecraft.citycore.data
 
+import kim.minecraft.citycore.data.economic.Currency
 import kim.minecraft.citycore.data.interfaces.owner.*
 import kim.minecraft.citycore.data.personal.Human
 import kim.minecraft.citycore.data.personal.SinglePlayer
@@ -72,6 +73,12 @@ object DataManager {
     }
 
     fun UUID.toTempRegionHolder(): TempRegionHolder {
+        TODO()
+    }
+
+    val currencies: MutableSet<Currency> = mutableSetOf()
+
+    fun UUID.toCurrency(): Currency {
         TODO()
     }
 }

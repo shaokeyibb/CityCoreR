@@ -5,26 +5,28 @@ import kim.minecraft.citycore.data.DataManager.findHuman
 import kim.minecraft.citycore.data.DataManager.save
 import kim.minecraft.citycore.data.DataManager.toCountry
 import kim.minecraft.citycore.data.DataManager.toSinglePlayer
+import kim.minecraft.citycore.data.economic.Wallet
 import kim.minecraft.citycore.data.interfaces.DestroyAble
 import kim.minecraft.citycore.data.interfaces.UniqueAble
 import kim.minecraft.citycore.data.interfaces.holder.NameHolder
+import kim.minecraft.citycore.data.interfaces.holder.WalletHolder
 import kim.minecraft.citycore.data.personal.internal.CountryHuman
 import kim.minecraft.citycore.data.political.Country
 import kim.minecraft.citycore.utils.serialzation.UUIDAsStringSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import java.util.*
 
-data class Human(@Serializable(with = UUIDAsStringSerializer::class) private val rawSource: UUID) : UniqueAble, NameHolder, DestroyAble {
+@Serializable
+data class Human(@Serializable(with = UUIDAsStringSerializer::class) private val rawSource: UUID) : UniqueAble, NameHolder, DestroyAble, WalletHolder {
     constructor(player: SinglePlayer) : this(player.uid)
 
     init {
         save()
     }
 
+    @Serializable(with = UUIDAsStringSerializer::class)
     override val uid: UUID = UUID.randomUUID()
 
-    @Transient
     val source: SinglePlayer
         get() = rawSource.toSinglePlayer()
 
@@ -45,6 +47,7 @@ data class Human(@Serializable(with = UUIDAsStringSerializer::class) private val
 
     val birthTime = source.bukkit().player!!.world.fullTime
 
+    @Serializable(with = UUIDAsStringSerializer::class)
     private var rawCurrencyCountry: UUID? = null
 
     var currentCountry: Country?
@@ -55,4 +58,6 @@ data class Human(@Serializable(with = UUIDAsStringSerializer::class) private val
 
     val countryCharacter: CountryHuman?
         get() = currentCountry?.members?.find { it.source == this }
+
+    override val wallet: Wallet = Wallet(this)
 }
