@@ -1,6 +1,7 @@
 package kim.minecraft.citycore.data.economic
 
 import kim.minecraft.citycore.data.DataManager.toCurrency
+import kim.minecraft.citycore.data.economic.internal.EconomyResponse
 import kim.minecraft.citycore.data.interfaces.holder.WalletHolder
 import kim.minecraft.citycore.utils.serialzation.UUIDAsStringSerializer
 import kotlinx.serialization.Serializable
@@ -11,7 +12,7 @@ import java.util.*
 class Wallet(val source: WalletHolder) {
     private val rawWallet: MutableMap<@Serializable(with = UUIDAsStringSerializer::class) UUID, Double> = mutableMapOf()
 
-    val wallet: MutableMap<LocalCurrency, Double>
+    private val wallet: Map<LocalCurrency, Double>
         get() {
             val temp: MutableMap<LocalCurrency, Double> = mutableMapOf()
             rawWallet.forEach {
@@ -22,7 +23,7 @@ class Wallet(val source: WalletHolder) {
 
     private val rawExtraWallet: MutableMap<Material, Double> = mutableMapOf()
 
-    val extraWallet: MutableMap<MaterialCurrency, Double>
+    private val extraWallet: Map<MaterialCurrency, Double>
         get() {
             val temp: MutableMap<MaterialCurrency, Double> = mutableMapOf()
             rawWallet.forEach {
@@ -30,4 +31,45 @@ class Wallet(val source: WalletHolder) {
             }
             return temp
         }
+
+    fun get(currency: Currency): Double {
+        return when (currency) {
+            is LocalCurrency -> {
+                wallet[currency] ?: 0.0
+            }
+            is MaterialCurrency -> {
+                extraWallet[currency] ?: 0.0
+            }
+            else -> {
+                throw AssertionError("Currency is neither LocalCurrency nor MaterialCurrency")
+            }
+        }
+    }
+
+    fun set(currency: Currency, amount: Double): EconomyResponse {
+        when (currency) {
+            is LocalCurrency -> {
+                rawWallet[currency.uid] = amount
+            }
+            is MaterialCurrency -> {
+                rawExtraWallet[currency.material] = amount
+            }
+            else -> {
+                throw AssertionError("Currency is neither LocalCurrency nor MaterialCurrency")
+            }
+        }
+        return EconomyResponse(currency, amount, get(currency))
+    }
+
+    fun has(currency: Currency, amount: Double): Boolean = get(currency) >= amount
+
+    fun deposit(currency: Currency, amount: Double): EconomyResponse {
+        set(currency, get(currency) + amount)
+        return EconomyResponse(currency, amount, get(currency))
+    }
+
+    fun withdraw(currency: Currency, amount: Double): EconomyResponse {
+        set(currency, get(currency) - amount)
+        return EconomyResponse(currency, amount, get(currency))
+    }
 }
